@@ -8,25 +8,27 @@ class ComplexityEstimator:
         assert (n_windows > 0)
         self.X = X
         self.y = y
-        self.seeds = random.sample(range(0, len(X) - 1), n_windows)
+        self.seeds = np.random.random_integers(0, len(X) - 1, n_windows)
         self.tree = scipy.spatial.cKDTree(X)
         self.labels = set(y)
+        self.Ks = np.arange(1, len(self.X) + 1)  # ckdTree starts counting from 1
+        self.Hs = np.zeros(len(self.Ks))
+        self.ws = np.ndarray((n_windows, len(self.Ks)))
 
-        Ks = np.arange(1, len(self.X) + 1)  # ckdTree starts counting from 1
-        ret = []
-
-        for k in Ks:
-            entropies = [self._H(k=k, seed=seed) for seed in self.seeds]
-            h = np.sum(entropies) / np.float32(len(self.seeds))
-            ret.append([k, h, [self.seeds, entropies]])
-
-        self.coomplexity = ret
+        for i, k in enumerate(self.Ks):
+            for j, seed in enumerate(self.seeds):
+                h = self._H(k=k, seed=seed)
+                self.ws[j, k-1] = h
+                self.Hs[i] = np.sum(self.ws[:, k-1]) / len(self.seeds)
 
     def get_k_complexity(self):
-        return self.coomplexity[0], self.coomplexity[1]
+        return self.Ks, self.Hs
 
-    def get_s_complexity(self):
-        return self.coomplexity[2][0], self.coomplexity[2][1]
+    def get_w_complexity(self):
+        return self.ws
+
+    def get_seed(self, window):
+        return self.seeds(window)
 
     def _nearest_neighbors(self, k, seed):
         return self.tree.query(self.X[seed, :], k=k)
@@ -35,8 +37,7 @@ class ComplexityEstimator:
         H = 0
         d, ii = self._nearest_neighbors(k, seed)
         for c in self.labels:
-            tmp = self.y[ii]
-            r = np.float32(len(np.where( tmp == c )))/np.float32(k)
+            r = len(np.extract(self.y[ii] == c, self.y[ii]))/k
             if r > 0:
                 H += (r * np.log2(r))
         return -H

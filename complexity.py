@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 
 ################################################################################################33
 
-def vis(datasets, classifiers, nwindows, nclfs):
+def vis(datasets, dsnames, classifiers, clfnames, nwindows):
     h = .02  # step size in the mesh
     figure = plt.figure(figsize=(27, 9))
     f1 = figure.number
@@ -46,9 +46,8 @@ def vis(datasets, classifiers, nwindows, nclfs):
         # just plot the dataset first
         cm = plt.cm.RdBu
         cm_bright = ListedColormap(['#FF0000', '#0000FF'])
-        ax = plt.subplot(len(datasets), nclfs + 2, i)
-        if ds_cnt == 0:
-            ax.set_title("Input data")
+        ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
+        ax.set_title(dsnames[ds_cnt])
         # Plot the training points
         ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=cm_bright)
         # and testing points
@@ -61,8 +60,8 @@ def vis(datasets, classifiers, nwindows, nclfs):
         i += 1
 
         # iterate over classifiers
-        for name, clf in classifiers:
-            ax = plt.subplot(len(datasets), nclfs + 2, i)
+        for name, clf in zip(clfnames, classifiers):
+            ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
             clf.fit(X_train, y_train)
             score = clf.score(X_test, y_test)
 
@@ -83,6 +82,7 @@ def vis(datasets, classifiers, nwindows, nclfs):
             ax.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap=cm_bright,
                        alpha=0.6)
 
+
             ax.set_xlim(xx.min(), xx.max())
             ax.set_ylim(yy.min(), yy.max())
             ax.set_xticks(())
@@ -94,32 +94,47 @@ def vis(datasets, classifiers, nwindows, nclfs):
             i += 1
 
         plt.figure(f2)
+        # plot data and
+        ax = plt.subplot(len(datasets), 2, j)
 
-        ax = plt.subplot(len(datasets), nwindows + 1, j)
+        ax.set_title(dsnames[ds_cnt])
+        # Plot also the training points
+        ax.scatter(X[:, 0], X[:, 1], c=y, cmap=cm_bright)
+        # and seeds
+        ax.scatter(X[estimator.seeds, 0], X[estimator.seeds, 1],
+                   alpha=1.0, facecolors='black')
+        ax.set_xlim(xx.min(), xx.max())
+        ax.set_ylim(yy.min(), yy.max())
+        ax.set_xticks(())
+        ax.set_yticks(())
+        j +=1
 
+        ax = plt.subplot(len(datasets), 2, j)
+        Ks, Es = estimator.get_k_complexity()
         if ds_cnt == 0:
-            ax.set_title("Complexity")
-
-        Ks, Es, = estimator.get_k_complexity()
-
+            ax.set_title('Avg. Complexity')
         ax.plot(Ks, Es)
         j+=1
+        '''
+                ws = estimator.get_w_complexity()
+                for wi, w in enumerate(ws):
+                    ax = plt.subplot(len(datasets), nwindows + 2, j)
+                    #ax.set_title("Window %d Seed %s" % (wi, str(X[estimator.seeds[wi]]) ))
+                    ax.plot(Ks, w)
+                    j+=1
+        '''
 
-        Ss, Es, = estimator.get_s_complexity()
-        for s in cmp[:][:][0]:
-            ax = plt.subplot(len(datasets), nwindows + 1, j)
-            ax.plot(Ks, Vs[1][s])
-            j+=1
-
-
-    plt.tight_layout()
+    figure.tight_layout()
+    figure2.tight_layout(h_pad=1.0)
+    figure.savefig(filename=('./vis/'+ ''.join(dsnames)+'Classifications.png'))
+    figure2.savefig(filename=('./vis/'+''.join(dsnames) + 'Complexities.png'))
     plt.show()
 
 def main():
 
-    names = ["Nearest Neighbors", "Linear SVM", "RBF SVM", "Gaussian Process",
-             "Decision Tree", "Random Forest", "Neural Net", "AdaBoost",
-             "Naive Bayes"]
+    names = ["kNN", "SVM-linear", "SVM-rbf", "Gaussian Process",
+             "Decision Tree", "Random Forest", "NN", "AdaBoost",
+             "NaiveBayes"]
 
     classifiers = [
         KNeighborsClassifier(3),
@@ -134,7 +149,7 @@ def main():
 
     assert(len(classifiers) == len(names))
 
-    clfs = zip(names, classifiers)
+
     nwindows = 10
     #X, y = make_classification(n_features=2, n_classes=2, n_redundant=0, n_informative=2, n_clusters_per_class=1)
     #rng = np.random.RandomState(2)
@@ -142,12 +157,12 @@ def main():
 
 
     #linearly_separable = (X, y)
-    datasets = [make_moons(noise=0.9),
-                make_circles(noise=0.9, factor=0.1),
+    datasets = [make_gaussian_quantiles(cov=0.5, n_classes=2),
                 make_gaussian_quantiles(n_classes=2)
                 ]
+    dsnames = ['Gaussians-1', 'Gaussians-2']
     #make_hastie_10_2
-    vis(datasets=datasets,classifiers=clfs, nwindows=nwindows, nclfs=len(classifiers))
+    vis(datasets=datasets, dsnames=dsnames, classifiers=classifiers, clfnames=names, nwindows=nwindows)
 
 
 if __name__ == "__main__":
