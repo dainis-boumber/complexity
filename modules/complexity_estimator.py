@@ -1,6 +1,5 @@
 import numpy as np
 import scipy
-import random
 
 class ComplexityEstimator:
 
@@ -36,8 +35,10 @@ class ComplexityEstimator:
     def _H(self, k, seed):
         H = 0
         d, ii = self._nearest_neighbors(k, seed)
+        neighbors = self.y[ii]
         for c in self.labels:
-            r = len(np.extract(self.y[ii] == c, self.y[ii]))/k
+            same_c = np.where(neighbors == c)[0]
+            r = len(same_c)/float(k)
             if r > 0:
                 H += (r * np.log2(r))
         return -H
