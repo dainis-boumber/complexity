@@ -127,11 +127,11 @@ def vis(datasets, dsnames, classifiers, clfnames, nwindows):
     figure2.savefig(filename=('./vis/'+''.join(dsnames) + 'Complexities.png'))
     plt.show()
 
-def plot_ds(loc, X, y, xx, yy, quota, seeds=None, colspan=1, rowspan=1):
+def plot_ds(loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, rowspan=1):
 
     ax = plt.subplot2grid((2, 6), loc, rowspan=rowspan, colspan=colspan)
 
-    ax.set_title('Src')
+    ax.set_title(title)
     # Plot also the training points
     ax.scatter(X[:, 0],X[:, 1], c=y)
     # and seeds
@@ -145,14 +145,14 @@ def plot_ds(loc, X, y, xx, yy, quota, seeds=None, colspan=1, rowspan=1):
 
 
 
-def active(X_src, X_tgt, y_src, y_tgt, quota):
+def active(classifier, X_src, X_tgt, y_src, y_tgt, quota):
     assert(quota % 5 == 0)
     ####USE THIS INSTEAD OF YTGT WHICH WE PRETEND TO NOT KNOW
     u_tgt = [None] * len(X_tgt)
     est_src = ce.ComplexityEstimator(X_src, y_src)
     est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt)
     # declare Dataset instance, X is the feature, y is the label (None if unlabeled)
-    model = MLPClassifier()
+    model = classifier
     oracle = Oracle(X_tgt, y_tgt)
 
     ##Begin plot
@@ -166,13 +166,13 @@ def active(X_src, X_tgt, y_src, y_tgt, quota):
     figure = plt.figure(figsize=(27, 9))
 
     # plot src
-    plot_ds((0, 0), X_src,y_src,xx, yy, quota, est_src.seeds)
+    plot_ds((0, 0), X_src,y_src,xx, yy, quota, 'Src', est_src.seeds)
     ax = plt.subplot2grid((2, 6), (0,1), colspan=2)
     ax.set_title('Src complexity')
     Ks, Es = est_src.get_k_complexity()
     ax.plot(Ks, Es)
     #plt tgt
-    plot_ds((0, 3), X_tgt,y_tgt,xx, yy, quota, est_tgt.seeds)
+    plot_ds((0, 3), X_tgt,y_tgt,xx, yy, quota, 'Tgt', est_tgt.seeds)
     ax = plt.subplot2grid((2, 6), (0,4), colspan=2)
     Ks, Es = est_tgt.get_k_complexity()
     ax.set_title('Tgt complexity')
@@ -208,8 +208,8 @@ def active(X_src, X_tgt, y_src, y_tgt, quota):
             ax.set_xticks(())
             ax.set_yticks(())
 
-            ax.set_title(str(i))
-            ax.text(xx.max() - .3, yy.min() + .3, ('%.2f' % score).lstrip('0'),
+            ax.set_title(str(model.__class__.__name__) + ' # queries=' + str(i))
+            ax.text(xx.max() - .3, yy.min() + .3, 'Accuracy='+('%.2f' % score).lstrip('0'),
                     size=15, horizontalalignment='right')
             w += 1
     figure.tight_layout()
@@ -248,7 +248,7 @@ def main():
     X_tgt, y_tgt = make_blobs(n_samples=100, centers = 3, cluster_std=3.0)
     #linearly_separable = (X, y)
 
-    active(X_src, X_tgt, y_src, y_tgt, 30)
+    active(MLPClassifier(), X_src, X_tgt, y_src, y_tgt, 30)
     #make_hastie_10_2
     #vis(datasets=datasets, dsnames=dsnames, classifiers=classifiers, clfnames=names, nwindows=nwindows)
 
