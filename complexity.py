@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_moons, make_circles, make_classification, make_blobs, make_gaussian_quantiles
+from sklearn.datasets import make_hastie_10_2, make_moons, make_gaussian_quantiles, make_circles, make_classification, make_blobs
 from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC, LinearSVC
@@ -16,6 +16,7 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from modules.oracle import Oracle
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 ################################################################################################33
 
@@ -127,9 +128,9 @@ def vis(datasets, dsnames, classifiers, clfnames, nwindows):
     figure2.savefig(filename=('./vis/'+''.join(dsnames) + 'Complexities.png'))
     plt.show()
 
-def plot_ds(loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, rowspan=1):
+def plot_ds(grid_size, loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, rowspan=1):
 
-    ax = plt.subplot2grid((2, 6), loc, rowspan=rowspan, colspan=colspan)
+    ax = plt.subplot2grid(grid_size, loc, rowspan=rowspan, colspan=colspan)
 
     ax.set_title(title)
     # Plot also the training points
@@ -145,76 +146,80 @@ def plot_ds(loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, rowspan=1):
 
 
 
-def active(classifier, X_src, X_tgt, y_src, y_tgt, quota):
+def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
     assert(quota % 5 == 0)
     ####USE THIS INSTEAD OF YTGT WHICH WE PRETEND TO NOT KNOW
     u_tgt = [None] * len(X_tgt)
     est_src = ce.ComplexityEstimator(X_src, y_src)
     est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt)
     # declare Dataset instance, X is the feature, y is the label (None if unlabeled)
-    model = classifier
-    oracle = Oracle(X_tgt, y_tgt)
-
-    ##Begin plot
     X = np.vstack((X_src, X_tgt))
-    y = np.vstack((y_src, y_tgt))
 
-    h = .02  # step size in the mesh
+    h = .05  # step size in the mesh
     x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
     y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h),np.arange(y_min, y_max, h))
-    figure = plt.figure(figsize=(27, 9))
+    figure = plt.figure(figsize=(27, 13))
+    grid_size = (1+len(classifiers), 6)
+    for n, classifier in enumerate(classifiers):
+        model = classifier
+        oracle = Oracle(X_tgt, y_tgt)
+        # plot src
+        plot_ds(grid_size, (0, 0), X_src,y_src,xx, yy, quota, 'Src', est_src.seeds)
+        ax = plt.subplot2grid(grid_size, (0,1), colspan=2)
+        ax.set_title('Src complexity')
+        Ks, Es = est_src.get_k_complexity()
+        ax.plot(Ks, Es)
+        #plt tgt
+        plot_ds(grid_size, (0, 3), X_tgt,y_tgt,xx, yy, quota, 'Tgt', est_tgt.seeds)
+        ax = plt.subplot2grid(grid_size, (0,4), colspan=2)
+        Ks, Es = est_tgt.get_k_complexity()
+        ax.set_title('Tgt complexity')
+        ax.plot(Ks, Es)
+        w = 0
+        X_known = X_src.tolist()
+        y_known = y_src.tolist()
+        for i in range(quota):  # loop through the number of queries
+            loc, y_loc = oracle.random_query()  # let the specified QueryStrategy suggest a data to query
+            u_tgt[loc] = y_loc
+            X_known.append(X_tgt[loc])
+            y_known.append(y_tgt[loc])
+            if i % 5 == 0:
+                model.fit(X_known, y_known)  # train model with newly-updated Dataset
+                score = model.score(X_tgt, y_tgt)
+                ax = plt.subplot2grid(grid_size, (n+1,w))
+                Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
 
-    # plot src
-    plot_ds((0, 0), X_src,y_src,xx, yy, quota, 'Src', est_src.seeds)
-    ax = plt.subplot2grid((2, 6), (0,1), colspan=2)
-    ax.set_title('Src complexity')
-    Ks, Es = est_src.get_k_complexity()
-    ax.plot(Ks, Es)
-    #plt tgt
-    plot_ds((0, 3), X_tgt,y_tgt,xx, yy, quota, 'Tgt', est_tgt.seeds)
-    ax = plt.subplot2grid((2, 6), (0,4), colspan=2)
-    Ks, Es = est_tgt.get_k_complexity()
-    ax.set_title('Tgt complexity')
-    ax.plot(Ks, Es)
-    w = 0
-    for i in range(quota):  # loop through the number of queries
-        loc, y_loc = oracle.random_query()  # let the specified QueryStrategy suggest a data to query
-        u_tgt[loc] = y_loc
-        X_tmp = []
-        y_tmp = []
-        if i % 5 == 0:
-            for j, yt in enumerate(u_tgt):
-                if yt is not None:
-                    X_tmp.append(X_tgt[j])
-                    y_tmp.append(yt)
-            X_tmp = np.vstack((X_src, X_tmp))
-            y_tmp = np.array(y_tmp)
-            y_tmp = np.hstack((y_tgt, y_tmp))
-            model.fit(X_tmp, y_tmp)  # train model with newly-updated Dataset
-            score = model.score(X_tgt, y_tgt)
-            ax = plt.subplot2grid((2, 6), (1,w))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+                # Put the result into a color plot
+                Z = Z.reshape(xx.shape)
 
-            # Put the result into a color plot
-            Z = Z.reshape(xx.shape)
+                ax.contourf(xx, yy, Z, alpha=.3)
 
-            ax.contourf(xx, yy, Z, alpha=.3)
-
-            # Plot also the training points
-            ax.scatter(X_tgt[:, 0], X_tgt[:, 1], c=y_tgt)
-            ax.set_xlim(xx.min(), xx.max())
-            ax.set_ylim(yy.min(), yy.max())
-            ax.set_xticks(())
-            ax.set_yticks(())
-
-            ax.set_title(str(model.__class__.__name__) + ' # queries=' + str(i))
-            ax.text(xx.max() - .3, yy.min() + .3, 'Accuracy='+('%.2f' % score).lstrip('0'),
-                    size=15, horizontalalignment='right')
-            w += 1
+                # Plot also the training points
+                ax.scatter(X_tgt[:, 0], X_tgt[:, 1], c=y_tgt)
+                ax.set_xlim(xx.min(), xx.max())
+                ax.set_ylim(yy.min(), yy.max())
+                ax.set_xticks(())
+                ax.set_yticks(())
+                if i == 0:
+                    ax.set_ylabel(str(model.__class__.__name__))
+                if n == 0:
+                    ax.set_title('# queries=' + str(i))
+                ax.set_xlabel('Accuracy='+('%.2f' % score).lstrip('0'))
+                w += 1
     figure.tight_layout()
     figure.savefig(filename=('./vis/active.png'))
     plt.show()
+
+def hastie(n_samples):
+    X, y = make_hastie_10_2(n_samples=n_samples)
+    for i, item in enumerate(y):
+        if item < 0:
+            y[i]=0
+        else:
+            y[i]=1
+    y = y.astype(int)
+    return X, y
 
 def main():
     '''
@@ -244,11 +249,13 @@ def main():
     #rng = np.random.RandomState(2)
     #X += 4 * rng.uniform(size=X.shape)
 
-    X_src, y_src = make_blobs(n_samples=100, centers = 3, cluster_std=3.0)
-    X_tgt, y_tgt = make_blobs(n_samples=100, centers = 3, cluster_std=3.0)
+    X_src, y_src = make_blobs(n_samples=200, centers = 2, cluster_std=3.0)
+    X_tgt, y_tgt = make_blobs(n_samples=100, centers = 2, cluster_std=5.0)
+    #X_src, y_src = make_gaussian_quantiles(n_features=10, n_classes=2)
+    #X_tgt, y_tgt = hastie(n_samples=1000)
     #linearly_separable = (X, y)
 
-    active(MLPClassifier(), X_src, X_tgt, y_src, y_tgt, 30)
+    active([SVC(), LinearSVC(), AdaBoostClassifier(), GaussianNB()], X_src, X_tgt, y_src, y_tgt, 30)
     #make_hastie_10_2
     #vis(datasets=datasets, dsnames=dsnames, classifiers=classifiers, clfnames=names, nwindows=nwindows)
 
