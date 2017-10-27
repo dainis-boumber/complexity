@@ -1,3 +1,3 @@
-[submodule "modules/nd-boundary-plot"]
-	path = modules/nd-boundary-plot
-	url = https://github.com/dainis-boumber/nd-boundary-plot.git
+[submodule "nd_boundary_plot"]
+	path = nd_boundary_plot
+	url = https://github.com/dainis-boumber/nd_boundary_plot.git

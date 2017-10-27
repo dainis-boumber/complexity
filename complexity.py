@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 import numpy as np
-from sklearn.datasets import make_blobs
+from sklearn.datasets import make_classification
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC, LinearSVC
@@ -9,6 +9,7 @@ from sklearn.svm import SVC, LinearSVC
 import modules.complexity_estimator as ce
 import modules.util as u
 from modules.oracle import Oracle
+from nd_boundary_plot.plots import nd_boundary_plot
 
 
 ################################################################################################33
@@ -75,22 +76,7 @@ def active(classifiers, src_datasets, tgt_datasets, quota=25, plot_every_n=5):
                 model.fit(X_known, y_known)  # train model with newly-updated Dataset
                 score = model.score(X_tgt, y_tgt)
                 ax = plt.subplot2grid(grid_size, (n + 1, w))
-                if hasattr(model, "decision_function") or len(set(y_known)) != 2:
-                    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-                else:
-                    Z = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
-
-                # Put the result into a color plot
-                Z = Z.reshape(xx.shape)
-
-                ax.contourf(xx, yy, Z, alpha=.3)
-
-                # Plot also the training points
-                ax.scatter(X_tgt[:, 0], X_tgt[:, 1], c=y_tgt)
-                ax.set_xlim(xx.min(), xx.max())
-                ax.set_ylim(yy.min(), yy.max())
-                ax.set_xticks(())
-                ax.set_yticks(())
+                nd_boundary_plot(X_tgt, model, (x_min, x_max, y_min, y_max), ax)
                 if i == 0:
                     ax.set_ylabel(u.classname(model))
                 if n == 0:
@@ -106,8 +92,10 @@ def main():
     src_datasets = []
     tgt_datasets = []
 
-    src_datasets.append(make_blobs(n_samples=200, centers=3, cluster_std=3.0))
-    tgt_datasets.append(make_blobs(n_samples=100, centers=3, cluster_std=5.0))
+    src_datasets.append(
+        make_classification(n_features=6, n_classes=3, n_redundant=0, n_informative=4, n_clusters_per_class=1))
+    tgt_datasets.append(
+        make_classification(n_features=6, n_classes=3, n_redundant=0, n_informative=4, n_clusters_per_class=1))
 
     active(classifiers=clfs, src_datasets=src_datasets, tgt_datasets=tgt_datasets)
     #make_hastie_10_2
