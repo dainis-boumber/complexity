@@ -150,5 +150,4 @@ vignettes/*.pdf
 *.iml
 out
 gen
-/.gitignore
 
