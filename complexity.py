@@ -83,7 +83,10 @@ def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
                 model.fit(X_known, y_known)  # train model with newly-updated Dataset
                 score = model.score(X_tgt, y_tgt)
                 ax = plt.subplot2grid(grid_size, (n+1,w))
-                Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+                if hasattr(model, "decision_function") or len(set(y_known)) != 2:
+                    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+                else:
+                    Z = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
 
                 # Put the result into a color plot
                 Z = Z.reshape(xx.shape)
@@ -136,8 +139,8 @@ def main():
     #rng = np.random.RandomState(2)
     #X += 4 * rng.uniform(size=X.shape)
 
-    X_src, y_src = make_blobs(n_samples=200, centers = 2, cluster_std=3.0)
-    X_tgt, y_tgt = make_blobs(n_samples=100, centers = 2, cluster_std=5.0)
+    X_src, y_src = make_blobs(n_samples=200, centers = 3, cluster_std=3.0)
+    X_tgt, y_tgt = make_blobs(n_samples=100, centers = 3, cluster_std=5.0)
     #X_src, y_src = make_gaussian_quantiles(n_features=10, n_classes=2)
     #X_tgt, y_tgt = hastie(n_samples=1000)
     #linearly_separable = (X, y)

@@ -67,16 +67,14 @@ def demo(datasets, dsnames, classifiers, nwindows):
 
             # Plot the decision boundary. For that, we will assign a color to each
             # point in the mesh [x_min, x_max]x[y_min, y_max].
-            if hasattr(clf, "decision_function"):
-                Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
-                Z = Z.reshape(xx.shape)
-                ax.contourf(xx, yy, Z, alpha=.8)
+            if hasattr(clf, "decision_function") or len(set(y_test)) != 2:
+                Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
             else:
                 Z = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
                 # Put the result into a color plot
-                Z = Z.reshape(xx.shape)
-                ax.contourf(xx, yy, Z, alpha=.8)
 
+            Z = Z.reshape(xx.shape)
+            ax.contourf(xx, yy, Z, alpha=.3)
             # Plot also the training points
             ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train)
             # and testing points
