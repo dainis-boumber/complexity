@@ -1,29 +1,22 @@
-import modules.complexity_estimator as ce
+import matplotlib.pyplot as plt
 
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_hastie_10_2, make_moons, make_gaussian_quantiles, make_circles, make_classification, make_blobs
-from sklearn.neural_network import MLPClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC, LinearSVC
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.datasets import make_blobs
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.linear_model import LogisticRegression
-from modules.oracle import Oracle
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.svm import SVC, LinearSVC
+
+import modules.complexity_estimator as ce
 import modules.util as u
+from modules.oracle import Oracle
+
+
 ################################################################################################33
 
 
 #scatter plot of a dataset helper
 #
-def plot_ds(grid_size, loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, rowspan=1):
+def plot_ds(grid_size, loc, X, y, xx, yy, title, seeds=None, colspan=1, rowspan=1):
 
     ax = plt.subplot2grid(grid_size, loc, rowspan=rowspan, colspan=colspan)
 
@@ -33,7 +26,7 @@ def plot_ds(grid_size, loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, r
     # and seeds
     if seeds is not None:
         ax.scatter(X[seeds, 0], X[seeds, 1],
-                   alpha=1.0, facecolors='black')
+                   alpha=1.0, facecolors='magenta')
     ax.set_xlim(xx.min(), xx.max())
     ax.set_ylim(yy.min(), yy.max())
     ax.set_xticks(())
@@ -41,9 +34,10 @@ def plot_ds(grid_size, loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, r
 
 #perform active learning
 #
-def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
-    assert(quota % 5 == 0)
+def active(classifiers, src_datasets, tgt_datasets, quota=25, plot_every_n=5):
     ####USE THIS INSTEAD OF YTGT WHICH WE PRETEND TO NOT KNOW
+    X_src, y_src = src_datasets[0]
+    X_tgt, y_tgt = tgt_datasets[0]
     u_tgt = [None] * len(X_tgt)
     est_src = ce.ComplexityEstimator(X_src, y_src)
     est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt)
@@ -60,13 +54,13 @@ def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
         model = classifier
         oracle = Oracle(X_tgt, y_tgt)
         # plot src
-        plot_ds(grid_size, (0, 0), X_src,y_src,xx, yy, quota, 'Src', est_src.seeds)
+        plot_ds(grid_size, (0, 0), X_src, y_src, xx, yy, 'Src', est_src.seeds)
         ax = plt.subplot2grid(grid_size, (0,1), colspan=2)
         ax.set_title('Src complexity')
         Ks, Es = est_src.get_k_complexity()
         ax.plot(Ks, Es)
         #plt tgt
-        plot_ds(grid_size, (0, 3), X_tgt,y_tgt,xx, yy, quota, 'Tgt', est_tgt.seeds)
+        plot_ds(grid_size, (0, 3), X_tgt, y_tgt, xx, yy, 'Tgt', est_tgt.seeds)
         ax = plt.subplot2grid(grid_size, (0,4), colspan=2)
         Ks, Es = est_tgt.get_k_complexity()
         ax.set_title('Tgt complexity')
@@ -79,7 +73,7 @@ def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
             u_tgt[loc] = y_loc
             X_known.append(X_tgt[loc])
             y_known.append(y_tgt[loc])
-            if i % 5 == 0:
+            if i == 0 or i % plot_every_n == 0 or i == quota - 1:
                 model.fit(X_known, y_known)  # train model with newly-updated Dataset
                 score = model.score(X_tgt, y_tgt)
                 ax = plt.subplot2grid(grid_size, (n+1,w))
@@ -139,13 +133,18 @@ def main():
     #rng = np.random.RandomState(2)
     #X += 4 * rng.uniform(size=X.shape)
 
-    X_src, y_src = make_blobs(n_samples=200, centers = 3, cluster_std=3.0)
-    X_tgt, y_tgt = make_blobs(n_samples=100, centers = 3, cluster_std=5.0)
     #X_src, y_src = make_gaussian_quantiles(n_features=10, n_classes=2)
     #X_tgt, y_tgt = hastie(n_samples=1000)
     #linearly_separable = (X, y)
 
-    active([SVC(), LinearSVC(), AdaBoostClassifier(), GaussianNB()], X_src, X_tgt, y_src, y_tgt, 30)
+    clfs = [SVC(), LinearSVC(), AdaBoostClassifier(), GaussianNB()]
+    src_datasets = []
+    tgt_datasets = []
+
+    src_datasets.append(make_blobs(n_samples=200, centers=3, cluster_std=3.0))
+    tgt_datasets.append(make_blobs(n_samples=100, centers=3, cluster_std=5.0))
+
+    active(classifiers=clfs, src_datasets=src_datasets, tgt_datasets=tgt_datasets)
     #make_hastie_10_2
     #vis(datasets=datasets, dsnames=dsnames, classifiers=classifiers, clfnames=names, nwindows=nwindows)
 

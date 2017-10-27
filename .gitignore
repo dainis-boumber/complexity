@@ -149,8 +149,6 @@ vignettes/*.pdf
 /.idea
 *.png
 .png
-.idea
-*.iml
 out
 gen
 
@@ -518,7 +516,6 @@ nbdist/
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
 
@@ -535,7 +532,6 @@ nbdist/
 .idea/**/gradle.xml
 .idea/**/libraries
 
-.idea/workspace.xml
 
 # CMake
 cmake-build-debug/
@@ -559,8 +555,6 @@ atlassian-ide-plugin.xml
 
 # Cursive Clojure plugin
 .idea/replstate.xml
-
-vis/
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
