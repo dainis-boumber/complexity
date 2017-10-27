@@ -535,6 +535,8 @@ nbdist/
 .idea/**/gradle.xml
 .idea/**/libraries
 
+.idea/workspace.xml
+
 # CMake
 cmake-build-debug/
 
