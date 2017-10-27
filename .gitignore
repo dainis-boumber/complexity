@@ -146,6 +146,8 @@ vignettes/*.pdf
 ### Example user template
 
 # IntelliJ project files
+/.idea
+*.png
 .idea
 *.iml
 out
