@@ -17,117 +17,12 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from modules.oracle import Oracle
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-
+import modules.util as u
 ################################################################################################33
 
-def vis(datasets, dsnames, classifiers, clfnames, nwindows):
-    h = .02  # step size in the mesh
-    figure = plt.figure(figsize=(27, 9))
-    f1 = figure.number
-    figure2 = plt.figure(figsize=(27, 9))
-    f2 = figure2.number
 
-    i = 1
-    j = 1
-    # iterate over datasets
-    for ds_cnt, ds in enumerate(datasets):
-        plt.figure(f1)
-        # preprocess dataset, split into training and test part
-        X, y = ds
-        estimator = ce.ComplexityEstimator(X, y, nwindows)
-        X = StandardScaler().fit_transform(X)
-        X_train, X_test, y_train, y_test = \
-            train_test_split(X, y, test_size=.4, random_state=42)
-
-        x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
-        y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
-        xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
-                             np.arange(y_min, y_max, h))
-
-
-        ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
-        ax.set_title(dsnames[ds_cnt])
-        # Plot the training points
-        ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train)
-        # and testing points
-        ax.scatter(X_test[:, 0], X_test[:, 1], c=y_test, alpha=0.6)
-        ax.set_xlim(xx.min(), xx.max())
-        ax.set_ylim(yy.min(), yy.max())
-        ax.set_xticks(())
-        ax.set_yticks(())
-
-        i += 1
-
-        # iterate over classifiers
-        for name, clf in zip(clfnames, classifiers):
-            ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
-            clf.fit(X_train, y_train)
-            score = clf.score(X_test, y_test)
-
-            # Plot the decision boundary. For that, we will assign a color to each
-            # point in the mesh [x_min, x_max]x[y_min, y_max].
-            if hasattr(clf, "decision_function"):
-                Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
-            else:
-                Z = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
-
-            # Put the result into a color plot
-            Z = Z.reshape(xx.shape)
-            ax.contourf(xx, yy, Z, alpha=.8)
-
-            # Plot also the training points
-            ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train)
-            # and testing points
-            ax.scatter(X_test[:, 0], X_test[:, 1], c=y_test)
-
-
-            ax.set_xlim(xx.min(), xx.max())
-            ax.set_ylim(yy.min(), yy.max())
-            ax.set_xticks(())
-            ax.set_yticks(())
-            if ds_cnt == 0:
-                ax.set_title(name)
-            ax.text(xx.max() - .3, yy.min() + .3, ('%.2f' % score).lstrip('0'),
-                    size=15, horizontalalignment='right')
-            i += 1
-
-        plt.figure(f2)
-        # plot data and
-        ax = plt.subplot(len(datasets), 2, j)
-
-        ax.set_title(dsnames[ds_cnt])
-        # Plot also the training points
-        ax.scatter(X[:, 0], X[:, 1], c=y)
-        # and seeds
-        ax.scatter(X[estimator.seeds, 0], X[estimator.seeds, 1],
-                   alpha=1.0, facecolors='black')
-        ax.set_xlim(xx.min(), xx.max())
-        ax.set_ylim(yy.min(), yy.max())
-        ax.set_xticks(())
-        ax.set_yticks(())
-        j +=1
-
-        ax = plt.subplot(len(datasets), 2, j)
-        Ks, Es = estimator.get_k_complexity()
-        if ds_cnt == 0:
-            ax.set_title('Avg. Complexity')
-        ax.plot(Ks, Es)
-        j+=1
-        '''
-                ws = estimator.get_w_complexity()
-                for wi, w in enumerate(ws):
-                    ax = plt.subplot(len(datasets), nwindows + 2, j)
-                    #ax.set_title("Window %d Seed %s" % (wi, str(X[estimator.seeds[wi]]) ))
-                    ax.plot(Ks, w)
-                    j+=1
-        '''
-
-    figure.tight_layout()
-    figure2.tight_layout(h_pad=1.0)
-    figure.savefig(filename=('./vis/'+ ''.join(dsnames)+'Classifications.png'))
-    figure2.savefig(filename=('./vis/'+''.join(dsnames) + 'Complexities.png'))
-    plt.show()
-
+#scatter plot of a dataset helper
+#
 def plot_ds(grid_size, loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, rowspan=1):
 
     ax = plt.subplot2grid(grid_size, loc, rowspan=rowspan, colspan=colspan)
@@ -144,8 +39,8 @@ def plot_ds(grid_size, loc, X, y, xx, yy, quota, title, seeds=None, colspan=1, r
     ax.set_xticks(())
     ax.set_yticks(())
 
-
-
+#perform active learning
+#
 def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
     assert(quota % 5 == 0)
     ####USE THIS INSTEAD OF YTGT WHICH WE PRETEND TO NOT KNOW
@@ -202,7 +97,7 @@ def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
                 ax.set_xticks(())
                 ax.set_yticks(())
                 if i == 0:
-                    ax.set_ylabel(str(model.__class__.__name__))
+                    ax.set_ylabel(u.classname(model))
                 if n == 0:
                     ax.set_title('# queries=' + str(i))
                 ax.set_xlabel('Accuracy='+('%.2f' % score).lstrip('0'))
@@ -211,15 +106,7 @@ def active(classifiers, X_src, X_tgt, y_src, y_tgt, quota):
     figure.savefig(filename=('./vis/active.png'))
     plt.show()
 
-def hastie(n_samples):
-    X, y = make_hastie_10_2(n_samples=n_samples)
-    for i, item in enumerate(y):
-        if item < 0:
-            y[i]=0
-        else:
-            y[i]=1
-    y = y.astype(int)
-    return X, y
+
 
 def main():
     '''
