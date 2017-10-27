@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="084179b3-f2de-417d-9539-b2814363ed53" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/demo.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modules/util.py" />
+    <list default="true" id="084179b3-f2de-417d-9539-b2814363ed53" name="Default" comment="Moved old code and created a separate standalno demo with it, demonstrating the idea of complexity measure as defined by us. &#10;&#10;Introduced util module. Moved hastie() there. &#10;&#10;Added classname() to util. Takes in an object, gives back its class name as a string, prettified if object is a scikit-learn classifier. &#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/vis/ClassificationBlobs 2_2_3MoonsCirclesClassifications.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/vis/ClassificationBlobs 2_2_3MoonsCirclesComplexities.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/vis/Gaussians-1Gaussians-2Classifications.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/vis/Gaussians-1Gaussians-2Complexities.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/vis/active.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/vis/active_nn.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/complexity.py" afterPath="$PROJECT_DIR$/complexity.py" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,8 +19,8 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/complexity$demo.coverage" NAME="demo Coverage Results" MODIFIED="1509065876250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/complexity$complexity.coverage" NAME="complexity Coverage Results" MODIFIED="1509049744369" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/complexity$demo.coverage" NAME="demo Coverage Results" MODIFIED="1509069617393" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/complexity$complexity.coverage" NAME="complexity Coverage Results" MODIFIED="1509069528651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -35,11 +38,21 @@
       <file leaf-file-name="complexity.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/complexity.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="486">
-              <caret line="99" column="51" lean-forward="false" selection-start-line="99" selection-start-column="51" selection-end-line="99" selection-end-column="51" />
+            <state relative-caret-position="162">
+              <caret line="45" column="12" lean-forward="false" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="449">
+              <caret line="563" column="0" lean-forward="false" selection-start-line="563" selection-start-column="0" selection-end-line="563" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -54,11 +67,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="demo.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="demo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/demo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="80" column="44" lean-forward="false" selection-start-line="80" selection-start-column="44" selection-end-line="80" selection-end-column="44" />
+            <state relative-caret-position="1005">
+              <caret line="76" column="43" lean-forward="false" selection-start-line="76" selection-start-column="43" selection-end-line="76" selection-end-column="43" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -104,16 +117,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="235">
               <caret line="236" column="0" lean-forward="false" selection-start-line="236" selection-start-column="0" selection-end-line="236" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="core.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python2.7/dist-packages/numpy/ma/core.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="505">
-              <caret line="6384" column="0" lean-forward="false" selection-start-line="6384" selection-start-column="0" selection-end-line="6384" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -166,9 +169,9 @@
       <find>y</find>
       <find>X</find>
       <find>name</find>
-      <find>__</find>
       <find>print</find>
       <find>set_xla</find>
+      <find>__</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -181,9 +184,10 @@
         <option value="$PROJECT_DIR$/modules/oracle.py" />
         <option value="$PROJECT_DIR$/modules/complexity_estimator.py" />
         <option value="$PROJECT_DIR$/complexity_demo.py" />
-        <option value="$PROJECT_DIR$/complexity.py" />
         <option value="$PROJECT_DIR$/modules/util.py" />
+        <option value="$PROJECT_DIR$/complexity.py" />
         <option value="$PROJECT_DIR$/demo.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -501,7 +505,70 @@
       <option name="project" value="LOCAL" />
       <updated>1509050135081</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Moved old code and created a separate standalno demo with it, demonstrating the idea of complexity measure as defined by us. &#10;&#10;Introduced util module. Moved hastie() there. &#10;&#10;Added classname() to util. Takes in an object, gives back its class name as a string, prettified if object is a scikit-learn classifier. &#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509066149603</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1509066149603</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Adding .gitignore it got lost somehow&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509069898345</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1509069898345</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Adding .ignore again&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509069947768</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1509069947768</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Updating gitignore&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509070093015</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1509070093015</updated>
+    </task>
+    <task id="LOCAL-00010" summary="gitignore update&#10;&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509070172519</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1509070172519</updated>
+    </task>
+    <task id="LOCAL-00011" summary="updated gitignore&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509070515349</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1509070515349</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Moved old code and created a separate standalno demo with it, demonstrating the idea of complexity measure as defined by us. &#10;&#10;Introduced util module. Moved hastie() there. &#10;&#10;Added classname() to util. Takes in an object, gives back its class name as a string, prettified if object is a scikit-learn classifier. &#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509070592721</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1509070592722</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Moved old code and created a separate standalno demo with it, demonstrating the idea of complexity measure as defined by us. &#10;&#10;Introduced util module. Moved hastie() there. &#10;&#10;Added classname() to util. Takes in an object, gives back its class name as a string, prettified if object is a scikit-learn classifier. &#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509070710219</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1509070710219</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Moved old code and created a separate standalno demo with it, demonstrating the idea of complexity measure as defined by us. &#10;&#10;Introduced util module. Moved hastie() there. &#10;&#10;Added classname() to util. Takes in an object, gives back its class name as a string, prettified if object is a scikit-learn classifier. &#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)">
+      <created>1509070821943</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1509070821943</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -510,10 +577,10 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32884902" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44394618" sideWeight="0.11969112" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20314136" sideWeight="0.4972973" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30994764" sideWeight="0.48185328" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30994764" sideWeight="0.48185328" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21503593" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21503593" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946378" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -545,25 +612,21 @@
     <MESSAGE value="Fixed bug. Visuals improved." />
     <MESSAGE value="Labels updated." />
     <MESSAGE value="Fixed bug in active learning updating the trained model incorrectly.&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed bug in active learning updating the trained model incorrectly.&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
+    <MESSAGE value="Adding .gitignore it got lost somehow&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
+    <MESSAGE value="Adding .ignore again&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
+    <MESSAGE value="Updating gitignore&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
+    <MESSAGE value="gitignore update&#10;&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
+    <MESSAGE value="updated gitignore&#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
+    <MESSAGE value="Moved old code and created a separate standalno demo with it, demonstrating the idea of complexity measure as defined by us. &#10;&#10;Introduced util module. Moved hastie() there. &#10;&#10;Added classname() to util. Takes in an object, gives back its class name as a string, prettified if object is a scikit-learn classifier. &#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved old code and created a separate standalno demo with it, demonstrating the idea of complexity measure as defined by us. &#10;&#10;Introduced util module. Moved hastie() there. &#10;&#10;Added classname() to util. Takes in an object, gives back its class name as a string, prettified if object is a scikit-learn classifier. &#10;&#10;TODO: Generalize visualization from 2 to N dimensions.&#10;TODO: Improve visualization&#10;TODO: Run on synthetic 2D data&#10;TODO: Run on gaussian_quartiles src, hastie_10_2 tgt&#10;TODO: Run on digits/reversed digits&#10;TODO: Run on text data like Enron e-mails (need to think about this one)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/complexity.py</url>
-          <line>77</line>
-          <option name="timeStamp" value="73" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/demo.py</url>
-          <line>124</line>
+          <line>122</line>
           <option name="timeStamp" value="77" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/demo.py</url>
-          <line>71</line>
-          <option name="timeStamp" value="85" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -573,7 +636,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="86" />
+      <option name="time" value="88" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -620,6 +683,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -657,13 +721,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="918">
           <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -796,16 +853,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/complexity.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="99" column="51" lean-forward="false" selection-start-line="99" selection-start-column="51" selection-end-line="99" selection-end-column="51" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/modules/util.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -816,11 +863,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/demo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="80" column="44" lean-forward="false" selection-start-line="80" selection-start-column="44" selection-end-line="80" selection-end-column="44" />
+        <state relative-caret-position="1005">
+          <caret line="76" column="43" lean-forward="false" selection-start-line="76" selection-start-column="43" selection-end-line="76" selection-end-column="43" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/complexity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="45" column="12" lean-forward="false" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="563" column="0" lean-forward="false" selection-start-line="563" selection-start-column="0" selection-end-line="563" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
