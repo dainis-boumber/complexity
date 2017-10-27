@@ -12,8 +12,6 @@ from modules.oracle import Oracle
 
 
 ################################################################################################33
-
-
 #scatter plot of a dataset helper
 #
 def plot_ds(grid_size, loc, X, y, xx, yy, title, seeds=None, colspan=1, rowspan=1):
@@ -35,7 +33,7 @@ def plot_ds(grid_size, loc, X, y, xx, yy, title, seeds=None, colspan=1, rowspan=
 #perform active learning
 #
 def active(classifiers, src_datasets, tgt_datasets, quota=25, plot_every_n=5):
-    ####USE THIS INSTEAD OF YTGT WHICH WE PRETEND TO NOT KNOW
+    # USE THIS INSTEAD OF YTGT WHICH WE PRETEND TO NOT KNOW
     X_src, y_src = src_datasets[0]
     X_tgt, y_tgt = tgt_datasets[0]
     u_tgt = [None] * len(X_tgt)
@@ -47,7 +45,7 @@ def active(classifiers, src_datasets, tgt_datasets, quota=25, plot_every_n=5):
     h = .05  # step size in the mesh
     x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
     y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),np.arange(y_min, y_max, h))
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
     figure = plt.figure(figsize=(27, 13))
     grid_size = (1+len(classifiers), 6)
     for n, classifier in enumerate(classifiers):
@@ -76,7 +74,7 @@ def active(classifiers, src_datasets, tgt_datasets, quota=25, plot_every_n=5):
             if i == 0 or i % plot_every_n == 0 or i == quota - 1:
                 model.fit(X_known, y_known)  # train model with newly-updated Dataset
                 score = model.score(X_tgt, y_tgt)
-                ax = plt.subplot2grid(grid_size, (n+1,w))
+                ax = plt.subplot2grid(grid_size, (n + 1, w))
                 if hasattr(model, "decision_function") or len(set(y_known)) != 2:
                     Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
                 else:
@@ -103,40 +101,7 @@ def active(classifiers, src_datasets, tgt_datasets, quota=25, plot_every_n=5):
     figure.savefig(filename=('./vis/active.png'))
     plt.show()
 
-
-
 def main():
-    '''
-    names = ["kNN", "SVM-linear", "SVM-rbf", "Gaussian Process",
-             "Decision Tree", "Random Forest", "NN", "AdaBoost",
-             "NaiveBayes"]
-
-    classifiers = [
-        KNeighborsClassifier(3),
-        LinearSVC(),
-        SVC(gamma=2, C=1),
-        GaussianProcessClassifier(1.0 * RBF(1.0), warm_start=True),
-        DecisionTreeClassifier(max_depth=5),
-        RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
-        MLPClassifier(alpha=1),
-        AdaBoostClassifier(),
-        GaussianNB()]
-
-    classifiers = [MLPClassifier()]
-    names = ['MLP']
-
-    assert(len(classifiers) == len(names))
-
-   '''
-    nwindows = 10
-    #X, y = make_classification(n_features=2, n_classes=2, n_redundant=0, n_informative=2, n_clusters_per_class=1)
-    #rng = np.random.RandomState(2)
-    #X += 4 * rng.uniform(size=X.shape)
-
-    #X_src, y_src = make_gaussian_quantiles(n_features=10, n_classes=2)
-    #X_tgt, y_tgt = hastie(n_samples=1000)
-    #linearly_separable = (X, y)
-
     clfs = [SVC(), LinearSVC(), AdaBoostClassifier(), GaussianNB()]
     src_datasets = []
     tgt_datasets = []
@@ -146,8 +111,6 @@ def main():
 
     active(classifiers=clfs, src_datasets=src_datasets, tgt_datasets=tgt_datasets)
     #make_hastie_10_2
-    #vis(datasets=datasets, dsnames=dsnames, classifiers=classifiers, clfnames=names, nwindows=nwindows)
-
 
 if __name__ == "__main__":
     main()
