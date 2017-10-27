@@ -148,6 +148,7 @@ vignettes/*.pdf
 # IntelliJ project files
 /.idea
 *.png
+.png
 .idea
 *.iml
 out
