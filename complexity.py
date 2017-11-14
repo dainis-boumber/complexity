@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
 
 import numpy as np
-from sklearn.datasets import make_gaussian_quantiles, make_moons, make_circles, make_blobs
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.datasets import make_moons, make_circles
 from sklearn.manifold.t_sne import TSNE
+from sklearn.metrics import auc
 from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC, LinearSVC
 
 import modules.complexity_estimator as ce
 import modules.util as u
@@ -63,12 +62,15 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
             ax.set_title('Src complexity')
             Ks, Es = est_src.get_k_complexity()
             ax.plot(Ks, Es)
+            ax.set_xlabel('AUC=' + ('%.2f' % auc(Ks, Es, reorder=True)).lstrip('0'))
+
             #plt tgt
             plot_ds(grid_size, (0, 3), X_tgt_plt, y_tgt, xx, yy, 'Tgt', est_tgt.seeds)
             ax = plt.subplot2grid(grid_size, (0,4), colspan=2)
             Ks, Es = est_tgt.get_k_complexity()
             ax.set_title('Tgt complexity')
             ax.plot(Ks, Es)
+            ax.set_xlabel('AUC=' + ('%.2f' % auc(Ks, Es, reorder=True)).lstrip('0'))
             w = 0
             X_known = X_src.tolist()
             y_known = y_src.tolist()
@@ -96,17 +98,16 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
     plt.show()
 
 def main():
-    clfs = [SVC(), LinearSVC(), AdaBoostClassifier(), GaussianNB()]
+    # clfs = [SVC(), LinearSVC(), AdaBoostClassifier(), GaussianNB()]
     datasets = []
     experiments = []
+    clfs = [GaussianNB()]
 
-    datasets.append(
-        (u.hastie(500), make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=2)))
-    experiments.append('hastie_10_2_vs_gauss_quant_10_2')
+    # datasets.append(
+    #    (u.hastie(500), make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=2)))
+    # experiments.append('hastie_10_2_vs_gauss_quant_10_2')
     datasets.append((make_moons(), make_circles()))
     experiments.append('moons')
-    datasets.append((make_blobs(), make_blobs()))
-    experiments.append('blobs')
 
     active(classifiers=clfs, datasets=datasets, experiments=experiments)
 

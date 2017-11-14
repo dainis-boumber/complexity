@@ -20,6 +20,9 @@ class ComplexityEstimator:
                 self.ws[j, k-1] = h
                 self.Hs[i] = np.sum(self.ws[:, k-1]) / len(self.seeds)
 
+        for h in self.Hs:
+            assert h >= 0.0 and h <= 1.0
+
     def get_k_complexity(self):
         return self.Ks, self.Hs
 
@@ -27,7 +30,7 @@ class ComplexityEstimator:
         return self.ws
 
     def get_seed(self, window):
-        return self.seeds(window)
+        return self.seeds[window]
 
     def _nearest_neighbors(self, k, seed):
         return self.tree.query(self.X[seed, :], k=k)
