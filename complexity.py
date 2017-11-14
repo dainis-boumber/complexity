@@ -38,12 +38,20 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
     for dsix, ((X_src, y_src), (X_tgt, y_tgt)) in enumerate(datasets):
         u_tgt = [None] * len(X_tgt)
         est_src = ce.ComplexityEstimator(X_src, y_src, n_windows=10, nK=1)
-        est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt, n_windows=10, nK=1)
+        est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt, n_windows=50, nK=1)
         # declare Dataset instance, X is the feature, y is the label (None if unlabeled)
         X = np.vstack((X_src, X_tgt))
-        X_src_plt = TSNE().fit_transform(X_src)
-        X_tgt_plt = TSNE().fit_transform(X_tgt)
-        X_plt = np.vstack((X_src_plt, X_tgt_plt))
+        if X.shape[1] > 2:
+            X_src_plt = TSNE().fit_transform(X_src)
+            X_tgt_plt = TSNE().fit_transform(X_tgt)
+            X_plt = np.vstack((X_src_plt, X_tgt_plt))
+        elif X.shape[1] == 2:
+            X_src_plt = X_src
+            X_tgt_plt = X_tgt
+            X_plt = X
+        else:
+            raise AttributeError
+
         h = .05  # step size in the mesh
         x_min, x_max = X_plt[:, 0].min() - h, X_plt[:, 0].max() + h
         y_min, y_max = X_plt[:, 1].min() - h, X_plt[:, 1].max() + h
@@ -81,8 +89,9 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
                 if i == 0 or i % plot_every_n == 0 or i == quota - 1:
                     model.fit(X_known, y_known)  # train model with newly-updated Dataset
                     score = model.score(X_tgt, y_tgt)
+                    y_predicted = model.predict(X_tgt)
                     ax = plt.subplot2grid(grid_size, (n + 1, w))
-                    nd_boundary_plot(X_tgt, model, (x_min, x_max, y_min, y_max), ax)
+                    nd_boundary_plot(X_tgt, y_predicted, model, ax)
                     if i == 0:
                         ax.set_ylabel(u.classname(model))
                     if n == 0:
@@ -106,7 +115,7 @@ def main():
     # datasets.append(
     #    (, make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=2)))
     # experiments.append('hastie_10_2_vs_gauss_quant_10_2')
-    datasets.append((make_moons(n_samples=1000), make_moons(n_samples=1000, noise=0.5)))
+    datasets.append((make_moons(n_samples=500), make_moons(n_samples=500)))
     # experiments.append('moons')
     # datasets.append((u.hastie(1000), u.hastie(1000)))
     experiments.append('moons_circles')
