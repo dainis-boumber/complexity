@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.datasets import make_gaussian_quantiles, make_moons, make_circles, make_blobs
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.manifold.t_sne import TSNE
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC, LinearSVC
 
@@ -42,25 +43,28 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
         est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt)
         # declare Dataset instance, X is the feature, y is the label (None if unlabeled)
         X = np.vstack((X_src, X_tgt))
-
+        X_src_plt = TSNE().fit_transform(X_src)
+        X_tgt_plt = TSNE().fit_transform(X_tgt)
+        X_plt = np.vstack((X_src_plt, X_tgt_plt))
         h = .05  # step size in the mesh
-        x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
-        y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
+        x_min, x_max = X_plt[:, 0].min() - .5, X_plt[:, 0].max() + .5
+        y_min, y_max = X_plt[:, 1].min() - .5, X_plt[:, 1].max() + .5
         xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
         figure = plt.figure(figsize=(27, 13))
 
         grid_size = (1+len(classifiers), 6)
         for n, classifier in enumerate(classifiers):
+
             model = classifier
             oracle = Oracle(X_tgt, y_tgt)
             # plot src
-            plot_ds(grid_size, (0, 0), X_src, y_src, xx, yy, 'Src', est_src.seeds)
+            plot_ds(grid_size, (0, 0), X_src_plt, y_src, xx, yy, 'Src', est_src.seeds)
             ax = plt.subplot2grid(grid_size, (0,1), colspan=2)
             ax.set_title('Src complexity')
             Ks, Es = est_src.get_k_complexity()
             ax.plot(Ks, Es)
             #plt tgt
-            plot_ds(grid_size, (0, 3), X_tgt, y_tgt, xx, yy, 'Tgt', est_tgt.seeds)
+            plot_ds(grid_size, (0, 3), X_tgt_plt, y_tgt, xx, yy, 'Tgt', est_tgt.seeds)
             ax = plt.subplot2grid(grid_size, (0,4), colspan=2)
             Ks, Es = est_tgt.get_k_complexity()
             ax.set_title('Tgt complexity')
