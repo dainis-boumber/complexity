@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
-import pandas as pd
+
 import numpy as np
-from sklearn.datasets import make_moons
+from sklearn.datasets import make_gaussian_quantiles
 from sklearn.manifold.t_sne import TSNE
 from sklearn.tree import DecisionTreeClassifier
 
@@ -38,7 +38,7 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
     for dsix, ((X_src, y_src), (X_tgt, y_tgt)) in enumerate(datasets):
         u_tgt = [None] * len(X_tgt)
         est_src = ce.ComplexityEstimator(X_src, y_src, n_windows=10, nK=1)
-        est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt, n_windows=50, nK=1)
+        est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt, n_windows=10, nK=1)
         # declare Dataset instance, X is the feature, y is the label (None if unlabeled)
         X = np.vstack((X_src, X_tgt))
         if X.shape[1] > 2:
@@ -115,10 +115,13 @@ def main():
     # datasets.append(
     #    (, make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=2)))
     # experiments.append('hastie_10_2_vs_gauss_quant_10_2')
-    datasets.append((make_moons(n_samples=500), make_moons(n_samples=500)))
+    # datasets.append((make_moons(n_samples=1000), make_moons(n_samples=1000)))
+
     # experiments.append('moons')
     # datasets.append((u.hastie(1000), u.hastie(1000)))
-    experiments.append('moons_circles')
+    datasets.append((make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=3),
+                     make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=3)))
+    experiments.append('gauus')
 
     active(classifiers=clfs, datasets=datasets, experiments=experiments)
 

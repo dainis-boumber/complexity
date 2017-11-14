@@ -25,7 +25,7 @@ class ComplexityEstimator:
                 self.Hs[i] = np.sum(self.ws[:, i]) / len(self.seeds)
 
         for h in self.Hs:
-            assert h >= 0.0 and h <= 1.0
+            assert h >= 0.0 and h <= len(self.labels) - 1.0
 
     def get_k_complexity(self):
         return self.Ks, self.Hs
