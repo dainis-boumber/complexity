@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.datasets import make_moons, make_circles
 from sklearn.manifold.t_sne import TSNE
-from sklearn.metrics import auc
-from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
 
 import modules.complexity_estimator as ce
 import modules.util as u
@@ -38,7 +37,7 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
 
     for dsix, ((X_src, y_src), (X_tgt, y_tgt)) in enumerate(datasets):
         u_tgt = [None] * len(X_tgt)
-        est_src = ce.ComplexityEstimator(X_src, y_src)
+        est_src = ce.ComplexityEstimator(X_src, y_src, n_windows=10, nK=2)
         est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt)
         # declare Dataset instance, X is the feature, y is the label (None if unlabeled)
         X = np.vstack((X_src, X_tgt))
@@ -46,8 +45,8 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
         X_tgt_plt = TSNE().fit_transform(X_tgt)
         X_plt = np.vstack((X_src_plt, X_tgt_plt))
         h = .05  # step size in the mesh
-        x_min, x_max = X_plt[:, 0].min() - .5, X_plt[:, 0].max() + .5
-        y_min, y_max = X_plt[:, 1].min() - .5, X_plt[:, 1].max() + .5
+        x_min, x_max = X_plt[:, 0].min() - h, X_plt[:, 0].max() + h
+        y_min, y_max = X_plt[:, 1].min() - h, X_plt[:, 1].max() + h
         xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
         figure = plt.figure(figsize=(27, 13))
 
@@ -62,7 +61,7 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
             ax.set_title('Src complexity')
             Ks, Es = est_src.get_k_complexity()
             ax.plot(Ks, Es)
-            ax.set_xlabel('AUC=' + ('%.2f' % auc(Ks, Es, reorder=True)).lstrip('0'))
+            ax.set_xlabel('AUC=' + ('%.2f' % est_src.auc()).lstrip('0'))
 
             #plt tgt
             plot_ds(grid_size, (0, 3), X_tgt_plt, y_tgt, xx, yy, 'Tgt', est_tgt.seeds)
@@ -70,7 +69,7 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
             Ks, Es = est_tgt.get_k_complexity()
             ax.set_title('Tgt complexity')
             ax.plot(Ks, Es)
-            ax.set_xlabel('AUC=' + ('%.2f' % auc(Ks, Es, reorder=True)).lstrip('0'))
+            ax.set_xlabel('AUC=' + ('%.2f' % est_tgt.auc()).lstrip('0'))
             w = 0
             X_known = X_src.tolist()
             y_known = y_src.tolist()
@@ -95,18 +94,19 @@ def active(classifiers, datasets, experiments, quota=25, plot_every_n=5):
         figure.tight_layout()
         fname = './vis/' + str(experiments[dsix]) + '.png'
         figure.savefig(filename=fname)
+    plt.tight_layout()
     plt.show()
 
 def main():
     # clfs = [SVC(), LinearSVC(), AdaBoostClassifier(), GaussianNB()]
     datasets = []
     experiments = []
-    clfs = [GaussianNB()]
+    clfs = [DecisionTreeClassifier()]
 
     # datasets.append(
     #    (u.hastie(500), make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=2)))
     # experiments.append('hastie_10_2_vs_gauss_quant_10_2')
-    datasets.append((make_moons(), make_circles()))
+    datasets.append((make_moons(n_samples=1000), make_circles()))
     experiments.append('moons')
 
     active(classifiers=clfs, datasets=datasets, experiments=experiments)

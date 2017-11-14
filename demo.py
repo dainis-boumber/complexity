@@ -20,7 +20,7 @@ import modules.util as u
 
 
 #This experiment is generic and is best used to demonstrate our approach
-#
+# May be out of date
 def demo(datasets, dsnames, classifiers, nwindows):
     h = .05  # step size in the mesh
     figure = plt.figure(figsize=(27, 9))
