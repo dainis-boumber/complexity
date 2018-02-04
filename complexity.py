@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 import modules.complexity_estimator as ce
 import modules.util as u
+from modules import mnist
 from modules.oracle import Oracle
 from nd_boundary_plot.plots import nd_boundary_plot
 
@@ -119,9 +120,12 @@ def main():
 
     # experiments.append('moons')
     # datasets.append((u.hastie(1000), u.hastie(1000)))
-    datasets.append((make_gaussian_quantiles(cov=0.5, n_samples=50, n_features=10, n_classes=2),
-                     make_gaussian_quantiles(n_samples=50, n_features=10, n_classes=2)))
-    experiments.append('gauus')
+
+    # datasets.append((make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=3),
+    #                 make_gaussian_quantiles(n_samples=500, n_features=10, n_classes=3)))
+    # experiments.append('gauus')
+    datasets.append((mnist.load_mnist(), mnist.load_mnist_rotated()))
+    experiments.append('MNIST_vs_MNIST_Rotated')
 
     active(classifiers=clfs, datasets=datasets, experiments=experiments)
 
