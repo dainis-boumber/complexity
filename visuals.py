@@ -14,6 +14,8 @@ X1, y1 = make_blobs(300, centers=[[0, 0], [0, 1]], cluster_std=0.1)
 X2, y2 = make_blobs(300, centers=[[1, -1], [1, 0]], cluster_std=0.1)
 X=np.vstack((X1,X2))
 y=np.hstack((y1,y2))
+np.savetxt("3dx.csv", X, delimiter=",")
+np.savetxt("3dy.csv", y, delimiter=",")
 ax.scatter(X[:,0], X[:,1], c=y, cmap='cool', alpha=0.4)
 ax = plt.subplot2grid(grid_size, (0, 1))
 

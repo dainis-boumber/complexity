@@ -1,5 +1,6 @@
-# complexity
-Authors: Ricardo Vilalta, Dainis Boumber, Michael Meskhi.
+# Complexity
+*Authors*: Ricardo Vilalta, Dainis Boumber, Michael Meskhi.
 
-Current work on estimating complexity of a distribution.
+**Description**
 
+TODO
