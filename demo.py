@@ -149,7 +149,7 @@ def demo(datasets, dsnames, classifiers, nwindows):
     figure2.tight_layout()
     figure.savefig(filename=('./vis/'+ ''.join(dsnames)+'Classifications.png'))
     figure2.savefig(filename=('./vis/'+''.join(dsnames) + 'Complexities.png'))
-    plt.show()
+    #plt.show()
 
 def main():
     classifiers = [
