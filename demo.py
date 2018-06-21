@@ -27,8 +27,6 @@ def demo(datasets, dsnames, classifiers, nwindows):
     f1 = figure.number
     figure2 = plt.figure(figsize=(27, 9))
     f2 = figure2.number
-    figure3 = plt.figure(figsize=(27, 9))
-    f3 = figure3.number
 
     i = 1
     j = 1
@@ -112,6 +110,7 @@ def demo(datasets, dsnames, classifiers, nwindows):
             ax.set_title('Avg. Complexity')
         ax.plot(Ks, Es)
         j+=1
+<<<<<<< HEAD
 
 
         # plot data and
@@ -138,6 +137,8 @@ def demo(datasets, dsnames, classifiers, nwindows):
         figure3.tight_layout()
         figure3.savefig(filename=('./vis/' + dsnames[ds_cnt] + 'Histograms.png'))
 
+=======
+>>>>>>> origin/baselines
         '''
                 ws = estimator.get_w_complexity()
                 for wi, w in enumerate(ws):
@@ -149,11 +150,8 @@ def demo(datasets, dsnames, classifiers, nwindows):
 
     figure.tight_layout()
     figure2.tight_layout()
-
-
     figure.savefig(filename=('./vis/'+ ''.join(dsnames)+'Classifications.png'))
     figure2.savefig(filename=('./vis/'+''.join(dsnames) + 'Complexities.png'))
-
     plt.show()
 
 def main():
