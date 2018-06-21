@@ -110,6 +110,8 @@ def demo(datasets, dsnames, classifiers, nwindows):
             ax.set_title('Avg. Complexity')
         ax.plot(Ks, Es)
         j+=1
+<<<<<<< HEAD
+
 
         # plot data and
         figure3, a = plt.subplots(nrows=1, ncols=2)
@@ -135,7 +137,8 @@ def demo(datasets, dsnames, classifiers, nwindows):
         figure3.tight_layout()
         figure3.savefig(filename=('./vis/' + dsnames[ds_cnt] + 'Histograms.png'))
 
-
+=======
+>>>>>>> origin/baselines
         '''
                 ws = estimator.get_w_complexity()
                 for wi, w in enumerate(ws):
@@ -156,6 +159,7 @@ def main():
         LinearDiscriminantAnalysis(),
         QuadraticDiscriminantAnalysis(),
         KNeighborsClassifier(3),
+        MLPClassifier(alpha=1),
         SVC(gamma=2, C=1),
         LinearSVC(),
         GaussianProcessClassifier(1.0 * RBF(1.0), warm_start=True),

@@ -27,6 +27,8 @@ def demo(datasets, dsnames, classifiers, nwindows):
     f1 = figure.number
     figure2 = plt.figure(figsize=(27, 9))
     f2 = figure2.number
+    figure3 = plt.figure(figsize=(27, 9))
+    f3 = figure3.number
 
     i = 1
     j = 1
@@ -111,8 +113,9 @@ def demo(datasets, dsnames, classifiers, nwindows):
         ax.plot(Ks, Es)
         j+=1
 
+
         # plot data and
-        figure3, a = plt.subplots(nrows=1, ncols=2)
+        figure3, a = plt.subplots(nrows=len(datasets), ncols=2,figsize=(27,9))
         a = a.ravel()
 
         for idx,ax in enumerate(a):
@@ -135,7 +138,6 @@ def demo(datasets, dsnames, classifiers, nwindows):
         figure3.tight_layout()
         figure3.savefig(filename=('./vis/' + dsnames[ds_cnt] + 'Histograms.png'))
 
-
         '''
                 ws = estimator.get_w_complexity()
                 for wi, w in enumerate(ws):
@@ -147,8 +149,11 @@ def demo(datasets, dsnames, classifiers, nwindows):
 
     figure.tight_layout()
     figure2.tight_layout()
+
+
     figure.savefig(filename=('./vis/'+ ''.join(dsnames)+'Classifications.png'))
     figure2.savefig(filename=('./vis/'+''.join(dsnames) + 'Complexities.png'))
+
     plt.show()
 
 def main():

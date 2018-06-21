@@ -110,32 +110,6 @@ def demo(datasets, dsnames, classifiers, nwindows):
             ax.set_title('Avg. Complexity')
         ax.plot(Ks, Es)
         j+=1
-
-        # plot data and
-        figure3, a = plt.subplots(nrows=1, ncols=2)
-        a = a.ravel()
-
-        for idx,ax in enumerate(a):
-            if idx % 2 == 0:
-                ax.set_title(dsnames[ds_cnt])
-                # Plot also the training points
-                ax.scatter(X[:, 0], X[:, 1], c=y)
-                # and seeds
-                ax.scatter(X[estimator.seeds, 0], X[estimator.seeds, 1],
-                           alpha=1.0, facecolors='black')
-                ax.set_xlim(xx.min(), xx.max())
-                ax.set_ylim(yy.min(), yy.max())
-                ax.set_xticks(())
-                ax.set_yticks(())
-            else:
-                ax.hist(Es, 10)
-                ax.set_xlabel('E')
-                ax.set_ylabel('frequency')
-                ax.set_title('Hist. of Entropy')
-        figure3.tight_layout()
-        figure3.savefig(filename=('./vis/' + dsnames[ds_cnt] + 'Histograms.png'))
-
-
         '''
                 ws = estimator.get_w_complexity()
                 for wi, w in enumerate(ws):
@@ -156,6 +130,7 @@ def main():
         LinearDiscriminantAnalysis(),
         QuadraticDiscriminantAnalysis(),
         KNeighborsClassifier(3),
+        MLPClassifier(alpha=1),
         SVC(gamma=2, C=1),
         LinearSVC(),
         GaussianProcessClassifier(1.0 * RBF(1.0), warm_start=True),
