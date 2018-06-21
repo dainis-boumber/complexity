@@ -115,7 +115,7 @@ def demo(datasets, dsnames, classifiers, nwindows):
 
 
         # plot data and
-        figure3, a = plt.subplots(nrows=len(datasets), ncols=2,figsize=(27,9))
+        figure3, a = plt.subplots(nrows=1, ncols=2)
         a = a.ravel()
 
         for idx,ax in enumerate(a):
