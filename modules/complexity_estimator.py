@@ -1,5 +1,5 @@
 import numpy as np
-import scipy
+import scipy.spatial
 import sklearn.metrics as metr
 
 class ComplexityEstimator:
@@ -11,7 +11,8 @@ class ComplexityEstimator:
         self.X = X
         self.y = y
         self.seeds = np.random.random_integers(0, len(X) - 1, n_windows)
-        self.tree = scipy.spatial.cKDTree(X)
+        self.tree = scipy.spatial.cKDTree(X, leafsize=32, compact_nodes=False, balanced_tree=False)
+        print('build done')
         self.labels = set(y)
 
         self.Ks = np.arange(1, len(self.X) + 1, step=nK)  # ckdTree starts counting from 1
@@ -19,6 +20,7 @@ class ComplexityEstimator:
         self.ws = np.ndarray((n_windows, len(self.Ks)))
 
         for i, k in enumerate(self.Ks):
+            print(k)
             for j, seed in enumerate(self.seeds):
                 h = self._H(k=k, seed=seed)
                 self.ws[j, i] = h

@@ -50,8 +50,8 @@ def plot_ds(grid_size, loc, X, y, xx, yy, title, seeds=None, colspan=1, rowspan=
 def active(classifiers, datasets, experiments, query_strat, quota=25, plot_every_n=5):
     for dataset_index, ((X_src, y_src), (X_tgt, y_tgt)) in enumerate(datasets):
         u_tgt = [None] * len(X_tgt)
-        est_src = ce.ComplexityEstimator(X_src, y_src, n_windows=10, nK=1)
-        est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt, n_windows=10, nK=1)
+        est_src = ce.ComplexityEstimator(X_src, y_src, n_windows=10, nK=10)
+        est_tgt = ce.ComplexityEstimator(X_tgt, y_tgt, n_windows=10, nK=10)
 
         # Declare Dataset instance, X is the feature, y is the label (None if unlabeled)
         X = np.vstack((X_src, X_tgt))
@@ -152,7 +152,8 @@ def active(classifiers, datasets, experiments, query_strat, quota=25, plot_every
     plt.show()
 
 def main():
-    clfs = [SVC(), GaussianNB(), DecisionTreeClassifier(), MLPClassifier(hidden_layer_sizes=(10,10,10,10,10,10), solver='lbfgs', alpha=2, random_state=1, activation='relu')]
+    #clfs = [SVC(), GaussianNB(), DecisionTreeClassifier(), MLPClassifier(hidden_layer_sizes=(10,10,10,10,10,10), solver='lbfgs', alpha=2, random_state=1, activation='relu')]
+    clfs = [SVC()]
     datasets = []
     experiments = []
     query_strat = 'RandomSampling'

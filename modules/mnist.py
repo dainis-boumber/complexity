@@ -8,7 +8,7 @@ from sklearn.utils import shuffle
 # Import data and preprocess 
 mnist = pd.read_csv('./data/mnist.csv') # Using 100 samples only for this test run
 labels = mnist.as_matrix(columns=['label'])
-dataset = mnist.drop('label', axis = 1).as_matrix()
+dataset = mnist.drop('label', axis = 1).values
 dataset[dataset > 0] = 1 # Convert each pixel either 0 for white and 1 for black for better classification
 
 
@@ -24,7 +24,7 @@ def load_mnist():
         index += 1
     X = np.array(X).reshape(rows, -1)
     mnist = pd.DataFrame(X)
-    mnist = mnist.as_matrix()
+    mnist = mnist.values
     y = labels.flatten()
     
     print("Completed with X shape: ", mnist.shape)
@@ -49,7 +49,7 @@ def load_mnist_rotated():
     
     mnist_rotated = pd.DataFrame(X)
     # mnist_rotated.to_csv('./data/mnist_rotated/minst_rotated_21000.csv', index=False, header=False)
-    mnist_rotated = mnist_rotated.as_matrix()
+    mnist_rotated = mnist_rotated.values
     
     y = labels.flatten()
     print("Completed with X shape: ", mnist_rotated.shape)
