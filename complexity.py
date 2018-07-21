@@ -46,7 +46,9 @@ def plot_ds(grid_size, loc, X, y, xx, yy, title, seeds=None, colspan=1, rowspan=
 '''
     Perform Active Learning
     QueryStrategy (Random Sampling or Uncertainty Sampling)
+
 '''
+
 def active(classifiers, datasets, experiments, query_strat, quota=25, plot_every_n=5):
     for dataset_index, ((X_src, y_src), (X_tgt, y_tgt)) in enumerate(datasets):
         u_tgt = [None] * len(X_tgt)
