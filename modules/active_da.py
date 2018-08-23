@@ -54,7 +54,7 @@ class CADA(object):
         self.Ks = np.arange(mink, maxk, step=stepsize)  # ckdTree starts counting from 1
         self.Hs = np.zeros(len(self.Ks))
         self.ws = np.zeros((len(self.seeds), len(self.Ks)))
-        self.banned = np.zeros((self.seeds, len(self.Ks)))
+        self.banned = np.zeros(len(self.seeds, len(self.Ks)))
         self.K = 0
 
         for i, k in enumerate(self.Ks):
