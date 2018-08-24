@@ -1,4 +1,5 @@
 # Necessities
+import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -156,16 +157,19 @@ def active(classifiers, datasets, experiments, query_strat, quota=25, plot_every
     plt.show()
 
 def bsda_active(datasets=[], baseline_clf=SVC(), N=100):
-	for ((X_src, y_src), (X_tgt, y_tgt)) in datasets:
-		X_src, y_src = X_src, y_src
-		X_tgt, y_tgt = X_tgt, y_tgt
-
-	CADA_clf = CADA(X_src, y_src)
-	ixs = CADA_clf.query(X_tgt, N)
-	BSDA_X_Train, BSDA_y_Train = X_tgt[ixs], y_tgt[ixs]
-	baseline_clf.fit(BSDA_X_Train, BSDA_y_Train)
-	print(baseline_clf.predict(X_tgt[-ixs]))
-	
+    for ((X_src, y_src), (X_tgt, y_tgt)) in datasets:
+        X_src, y_src = X_src, y_src
+        X_tgt, y_tgt = X_tgt, y_tgt
+    CADA_clf = CADA(X_src, y_src)
+    ixs = CADA_clf.query(X_tgt, N)
+    BSDA_X_Train, BSDA_y_Train = X_tgt[ixs], y_tgt[ixs]
+    baseline_clf.fit(BSDA_X_Train, BSDA_y_Train)
+    BSDA_X_Test = np.delete(X_tgt, ixs, axis=0)
+    BSDA_y_Test = np.delete(y_tgt, ixs, axis=0)
+    print(BSDA_X_Test.shape)
+    print(X_tgt.shape)
+    print(baseline_clf.predict(BSDA_X_Test))
+    print("Classification accuracy: ", round(baseline_clf.score(BSDA_X_Test, BSDA_y_Test), 3) * 100)
 
 
 def main():
