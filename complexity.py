@@ -182,12 +182,12 @@ def main():
     # experiments.append('moons')
     # datasets.append((u.hastie(1000), u.hastie(1000)))
 
-    # datasets.append((make_gaussian_quantiles(n_samples=500, n_features=5, n_classes=3),
-    #                 make_gaussian_quantiles(n_samples=500, n_features=5, n_classes=3)))
-    # experiments.append('gauus')
+    datasets.append((make_gaussian_quantiles(n_samples=500, n_features=5, n_classes=3),
+                     make_gaussian_quantiles(n_samples=500, n_features=5, n_classes=3)))
+    experiments.append('gauus')
 
-    datasets.append((mnist.load_mnist(), mnist.load_mnist_rotated()))
-    experiments.append('MNIST_vs_MNIST_Rotated')
+    #datasets.append((mnist.load_mnist(), mnist.load_mnist_rotated()))
+    #experiments.append('MNIST_vs_MNIST_Rotated')
 
     #baseline_active(classifiers=clfs, datasets=datasets, experiments=experiments, query_strat=query_strat)
     bsda_active(datasets=datasets)

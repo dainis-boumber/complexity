@@ -26,11 +26,10 @@ class CADA(object):
     6. Go to step 3 until no more examples are left for sampling.
     7. Create a model with the queried examples on target. (outside the scope of this class, can use any model you want)
     '''
-    def __init__(self, source_X, source_y, max_entropy=0.1, f_samples=0.01, window_growth_rate=0.1, mink=1, maxk=-1, n_samples=-1):
+    def __init__(self, source_X, source_y, max_entropy=0.9, f_samples=0.01, window_growth_rate=0.01):
         assert(len(source_X)==len(source_y))
         assert(f_samples <= 1.0 and max_entropy <= 1.0)
-        assert (n_samples < len(source_y))
-        assert(mink > 0 and maxk < len(source_y))
+
         #all sane
 
         #how many do we actually sample in Step 3
@@ -38,20 +37,13 @@ class CADA(object):
         self.source_y = source_y
         #build the tree of the distribution that we do nn on
         self.tree = scipy.spatial.cKDTree(self.source_X, leafsize=32, compact_nodes=False, balanced_tree=False)
-        print('build done')
-        if n_samples == -1:
-            self.n_samples = int(len(source_y) * f_samples)
-            if self.n_samples == 0:
-                self.n_samples = 1
-        else:
-            self.n_samples = n_samples
-        #init sampling
-        self.seeds = np.random.random_integers(0, len(source_X) - 1, self.n_samples)
+
+        self.seeds = np.random.random_integers(0, len(source_X) - 1, len(source_y))
         self.classes = set(source_y)
-        stepsize = int(maxk * window_growth_rate)
+        stepsize = int(len(source_y) * window_growth_rate)
         if stepsize == 0:
             stepsize = 1
-        self.Ks = np.arange(mink, maxk, step=stepsize)  # ckdTree starts counting from 1
+        self.Ks = np.arange(1, len(source_y), step=stepsize)  # ckdTree starts counting from 1
         self.Hs = np.zeros(len(self.Ks))
         print(self.Hs)
         self.ws = np.zeros((len(self.seeds), len(self.Ks)))
@@ -63,11 +55,13 @@ class CADA(object):
 
             # add up entropy for each window as they grow
             self.Hs[i] = np.sum(self.ws[:, i]) / len(self.seeds)
-
+            #print(self.Hs[i])
             if self.Hs[i] > max_entropy:
                 if i > 0:
-                    self.K = self.Ks[i-1]
+                   self.K = self.Ks[i-1]
                 break # done with step 2
+
+        assert(self.K > 0 and self.K < len(source_y))
 
     # returns indices into target_X
 
@@ -84,7 +78,7 @@ class CADA(object):
 
             for example_ix in example_indices:
                 _, ii = self._nearest_neighbors(self.K, example_ix) # step 4
-                target_banned[ii.flatten().squeeze()] = 1 # step 5
+                target_banned[ii] = 1 # step 5
 
         return queried_example_indices
 
@@ -101,5 +95,6 @@ class CADA(object):
             r = len(same_c)/float(k)
             if r > 0:
                 H += (r * np.log2(r))
+        print(H)
         return -H
 
