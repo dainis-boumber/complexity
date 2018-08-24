@@ -18,7 +18,7 @@ class ComplexityEstimator:
         self.Ks = np.arange(1, len(self.X) + 1, step=nK)  # ckdTree starts counting from 1
         self.Hs = np.zeros(len(self.Ks))
         self.ws = np.ndarray((n_windows, len(self.Ks)))
-
+        
         for i, k in enumerate(self.Ks):
             print(k)
             for j, seed in enumerate(self.seeds):

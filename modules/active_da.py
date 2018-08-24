@@ -18,7 +18,7 @@ from modules.oracle import Oracle
 
 class CADA(object):
     '''
-    1.  Compute complexity measure on source domain at different levels of locality (size of neighborhood).
+    1. Compute complexity measure on source domain at different levels of locality (size of neighborhood).
     2. Choose the single neighborhood size K* that keeps entropy below a predefined threshold.
     3. Sample N examples from target domain randomly.
     4. Grow a window around each example of size K*.
@@ -53,8 +53,8 @@ class CADA(object):
             stepsize = 1
         self.Ks = np.arange(mink, maxk, step=stepsize)  # ckdTree starts counting from 1
         self.Hs = np.zeros(len(self.Ks))
+        print(self.Hs)
         self.ws = np.zeros((len(self.seeds), len(self.Ks)))
-        self.banned = np.zeros((self.seeds, len(self.Ks)))
         self.K = 0
 
         for i, k in enumerate(self.Ks):

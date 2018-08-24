@@ -17,9 +17,11 @@ import modules.util as u
 from modules.oracle import Oracle
 import modules.complexity_estimator as ce
 from nd_boundary_plot.plots import nd_boundary_plot
+from modules.active_da import CADA
 
 # Data pre-processing and import
-from modules import mnist
+# from modules import mnist
+from modules import mnist 
 
 ####################################################
 
@@ -153,9 +155,21 @@ def active(classifiers, datasets, experiments, query_strat, quota=25, plot_every
     plt.tight_layout()
     plt.show()
 
+def bsda_active(datasets=[], baseline_clf=SVC(), N=100):
+	for ((X_src, y_src), (X_tgt, y_tgt)) in datasets:
+		X_src, y_src = X_src, y_src
+		X_tgt, y_tgt = X_tgt, y_tgt
+
+	CADA_clf = CADA(X_src, y_src)
+	ixs = CADA_clf.query(X_tgt, N)
+	BSDA_X_Train, BSDA_y_Train = X_tgt[ixs], y_tgt[ixs]
+	baseline_clf.fit(BSDA_X_Train, BSDA_y_Train)
+	print(baseline_clf.predict(X_tgt[-ixs]))
+	
+
+
 def main():
-    #clfs = [SVC(), GaussianNB(), DecisionTreeClassifier(), MLPClassifier(hidden_layer_sizes=(10,10,10,10,10,10), solver='lbfgs', alpha=2, random_state=1, activation='relu')]
-    clfs = [SVC()]
+    #baseline_clfs = [SVC(), GaussianNB(), DecisionTreeClassifier(), MLPClassifier(hidden_layer_sizes=(10,10,10,10,10,10), solver='lbfgs', alpha=2, random_state=1, activation='relu')]
     datasets = []
     experiments = []
     query_strat = 'RandomSampling'
@@ -168,14 +182,15 @@ def main():
     # experiments.append('moons')
     # datasets.append((u.hastie(1000), u.hastie(1000)))
 
-    # datasets.append((make_gaussian_quantiles(n_samples=2000, n_features=10, n_classes=3),
-    #                 make_gaussian_quantiles(n_samples=2000, n_features=10, n_classes=3)))
+    # datasets.append((make_gaussian_quantiles(n_samples=500, n_features=5, n_classes=3),
+    #                 make_gaussian_quantiles(n_samples=500, n_features=5, n_classes=3)))
     # experiments.append('gauus')
 
     datasets.append((mnist.load_mnist(), mnist.load_mnist_rotated()))
     experiments.append('MNIST_vs_MNIST_Rotated')
 
-    active(classifiers=clfs, datasets=datasets, experiments=experiments, query_strat=query_strat)
+    #baseline_active(classifiers=clfs, datasets=datasets, experiments=experiments, query_strat=query_strat)
+    bsda_active(datasets=datasets)
 
 if __name__ == "__main__":
     main()

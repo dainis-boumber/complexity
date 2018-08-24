@@ -14,7 +14,7 @@ dataset[dataset > 0] = 1 # Convert each pixel either 0 for white and 1 for black
 
 def load_mnist():
     
-    rows = 42000
+    rows = 100
     columns = 784
     index = 1
     X = []
@@ -30,13 +30,13 @@ def load_mnist():
     print("Completed with X shape: ", mnist.shape)
     print("Flattened y shape: ", y.shape)
     
-    mnist, y = shuffle(X, y, random_state = 5)
+    mnist, y = shuffle(X, y, random_state = 2)
     return mnist, y
   
   
 def load_mnist_rotated():
     
-    rows = 42000
+    rows = 100
     columns = 784
     indx = 1
     X = []
@@ -55,5 +55,5 @@ def load_mnist_rotated():
     print("Completed with X shape: ", mnist_rotated.shape)
     print("Flattened y shape: ", y.shape)
     
-    mnist_rotated, y = shuffle(X, y, random_state = 15)
+    mnist_rotated, y = shuffle(X, y, random_state = 7)
     return mnist_rotated, y
